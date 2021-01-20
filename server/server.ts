@@ -26,7 +26,7 @@ socket.on('listening', (): void => {
 	console.log(
 		`UDP socket listening on ${address.address}:${address.port} pid: ${process.pid}`
 	);
-	sendFile('/home/pascal/Documents/2course-v1inria41020ArchiIntro-Video2.mp4');	// Sends the file
+	sendFile('/home/pascal/Vidéos/2course-v1inria41020ArchiIntro-Video2.mp4');	// Sends the file
 });
 
 

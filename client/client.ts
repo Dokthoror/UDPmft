@@ -10,7 +10,7 @@ const MULTICAST_ADDR = '233.255.255.255';
 
 
 const socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
-socket.bind(PORT, INTERFACE_ADDR);
+socket.bind(PORT);
 
 
 // When the socket is ready to listen
