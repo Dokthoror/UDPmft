@@ -1,0 +1,27 @@
+{
+  "name": "udpmft",
+  "version": "1.0.0",
+  "description": "UDPmft stands for UDP Multicast File Transfer. It provides a server and a client to share files between one server and many clients using multicast.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dokthoror/UDPmft.git"
+  },
+  "author": "Dokthoror",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Dokthoror/UDPmft/issues"
+  },
+  "homepage": "https://github.com/Dokthoror/UDPmft#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "@typescript-eslint/eslint-plugin": "^4.14.0",
+    "@typescript-eslint/parser": "^4.14.0",
+    "eslint": "^7.18.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
