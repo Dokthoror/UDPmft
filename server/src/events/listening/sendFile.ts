@@ -6,14 +6,18 @@ import { socket } from '../../../server';
 
 // Function which sends the file passes as an argument in the multicast group
 export const sendFile = (pathToFile: string): void => {
+	let packetNumber = 0;
+
 	const bitStart = 'START';
 	const bitStop = 'STOP';
 	const fileName: string = pathToFile.split('/').splice(-1, 1)[0];	// Gets the file name
 
 	// Sends the starting packets
 	// "START file_name"
-	socket.send(`${bitStart} ${fileName}`, config.PORT, config.MULTICAST_ADDR);
-	console.log('send START + filename');
+	socket.send(`${bitStart} ${fileName}`, config.PORT, config.MULTICAST_ADDR, (e: Error | null): void => {
+		if (e) throw e;
+	});
+	console.log(`${packetNumber++}: sends START + filename`);
 
 	// Starts reading the file passed as an argument, in 32kb increments
 	const fileStream: ReadStream = createReadStream(pathToFile, {
@@ -31,6 +35,7 @@ export const sendFile = (pathToFile: string): void => {
 				fileStream.pause();
 			}
 		);
+		console.log(`${packetNumber++}: sends ${chunk.length} bytes`);
 		setTimeout((): void => {
 			fileStream.resume();
 		}, config.DELAY);
@@ -38,8 +43,10 @@ export const sendFile = (pathToFile: string): void => {
 
 	// When the reading of the file is finished, sends the packet that indicates the end of the transfer, with the md5 hash of the original file for comparison
 	fileStream.on('close', () => {
-		socket.send(`${bitStop} undefined`, config.PORT, config.MULTICAST_ADDR);
-		console.log('send STOP + md5');
+		socket.send(`${bitStop} undefined`, config.PORT, config.MULTICAST_ADDR, (e: Error | null): void => {
+			if (e) throw e;
+		});
+		console.log(`${packetNumber++}: sends STOP + md5`);
 		socket.close();
 	});
 };
