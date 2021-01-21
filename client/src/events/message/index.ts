@@ -35,6 +35,9 @@ const run: (message: Buffer, remote: RemoteInfo) => void = (message: Buffer, rem
 		writeToFile = false;
 		wStream.close();	// Closes the WriteStream and write the data in the target file
 		console.log(`${packetNumber}: STOP received`);
+		socket.close((): void => {
+			console.log('socket has been closed');
+		});
 		break;
 
 	default:
@@ -42,10 +45,6 @@ const run: (message: Buffer, remote: RemoteInfo) => void = (message: Buffer, rem
 			// Writes the data in the cache
 			wStream.write(message, (e: Error | null | undefined): void => {
 				if (e) throw e;
-				socket.close((): void => {
-					if (e) throw e;
-					console.log('socket has been closed');
-				});
 			});
 			console.log(`${packetNumber}: receives ${message.length} bytes`);
 		}
