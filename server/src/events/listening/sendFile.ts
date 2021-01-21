@@ -19,30 +19,30 @@ export const sendFile = (pathToFile: string): void => {
 	});
 	console.log(`${packetNumber++}: sends START + filename`);
 
-	// Starts reading the file passed as an argument, in 32kb increments
-	const fileStream: ReadStream = createReadStream(pathToFile, {
+	// Starts reading the file passed as an argument, in 32kB increments
+	const rStream: ReadStream = createReadStream(pathToFile, {
 		highWaterMark: 32 * 1024,
 	});
 
 	// When the stream reads 32kb of data from the file, sends to the multicast group with a delay of DELAY ms
-	fileStream.on('data', (chunk: string): void => {
+	rStream.on('data', (chunk: string): void => {
 		socket.send(
 			chunk,
 			config.PORT,
 			config.MULTICAST_ADDR,
 			(e: Error | null): void => {
 				if (e) throw e;
-				fileStream.pause();
+				rStream.pause();
 			}
 		);
 		console.log(`${packetNumber++}: sends ${chunk.length} bytes`);
 		setTimeout((): void => {
-			fileStream.resume();
+			rStream.resume();
 		}, config.DELAY);
 	});
 
 	// When the reading of the file is finished, sends the packet that indicates the end of the transfer, with the md5 hash of the original file for comparison
-	fileStream.on('close', () => {
+	rStream.on('close', (): void => {
 		socket.send(`${bitStop} undefined`, config.PORT, config.MULTICAST_ADDR, (e: Error | null): void => {
 			if (e) throw e;
 		});
