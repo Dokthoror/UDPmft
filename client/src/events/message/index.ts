@@ -2,6 +2,7 @@
 import Event from '../../modules/Event';
 import { RemoteInfo } from 'dgram';
 import { WriteStream, createWriteStream } from 'fs';
+import { socket } from '../../../client';
 
 
 // Tells if the packets the socket receives should be written in the target file
@@ -38,7 +39,11 @@ const run: (message: Buffer, remote: RemoteInfo) => void = (message: Buffer, rem
 
 	default:
 		if (writeToFile) {
-			wStream.write(message);	// Writes the data in the cache
+			// Writes the data in the cache
+			wStream.write(message, (e: Error | null | undefined): void => {
+				if (e) throw e;
+				socket.close((): void => console.log('socket has been closed'));
+			});
 			console.log(`${packetNumber}: receives ${message.length} bytes`);
 		}
 		break;
