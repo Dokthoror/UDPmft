@@ -16,6 +16,5 @@ socket.on('listening', (): void => {
 
 
 socket.on('message', (message: Buffer, remote: dgram.RemoteInfo): void => {
-	console.log('test');
-	// eventsHandler.find((e: Event) => e.name == 'message')?.run(message, remote);
+	eventsHandler.find((e: Event) => e.name == 'message')?.run(message, remote);
 });
