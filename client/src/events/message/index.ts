@@ -27,13 +27,13 @@ const run: (message: Buffer, remote: RemoteInfo) => void = (message: Buffer, rem
 		writeToFile = true;
 		wStream = createWriteStream(`./${value}`, { flags: 'a' });	// Flag "append"
 		wStream.cork();	// Caches the data
-		console.log(`${packetNumber++}: START received`);
+		console.log(`${packetNumber}: START received`);
 		break;
 
 	case 'STOP':
 		writeToFile = false;
 		wStream.close();	// Closes the WriteStream and write the data in the target file
-		console.log(`${packetNumber++}: STOP received`);
+		console.log(`${packetNumber}: STOP received`);
 		break;
 
 	default:
@@ -43,6 +43,8 @@ const run: (message: Buffer, remote: RemoteInfo) => void = (message: Buffer, rem
 		}
 		break;
 	}
+
+	packetNumber++;
 };
 
 
