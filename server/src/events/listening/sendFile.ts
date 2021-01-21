@@ -1,11 +1,11 @@
 // Import dependancies
-import { Socket } from 'dgram';
 import { ReadStream, createReadStream } from 'fs';
 import config from '../../../config.json';
+import { socket } from '../../../server';
 
 
 // Function which sends the file passes as an argument in the multicast group
-export const sendFile = (pathToFile: string, socket: Socket): void => {
+export const sendFile = (pathToFile: string): void => {
 	const bitStart = 'START';
 	const bitStop = 'STOP';
 	const fileName: string = pathToFile.split('/').splice(-1, 1)[0];	// Gets the file name
@@ -40,5 +40,6 @@ export const sendFile = (pathToFile: string, socket: Socket): void => {
 	fileStream.on('close', () => {
 		socket.send(`${bitStop} undefined`, config.PORT, config.MULTICAST_ADDR);
 		console.log('send STOP + md5');
+		socket.close();
 	});
 };
