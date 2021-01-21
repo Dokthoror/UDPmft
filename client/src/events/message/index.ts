@@ -42,7 +42,10 @@ const run: (message: Buffer, remote: RemoteInfo) => void = (message: Buffer, rem
 			// Writes the data in the cache
 			wStream.write(message, (e: Error | null | undefined): void => {
 				if (e) throw e;
-				socket.close((): void => console.log('socket has been closed'));
+				socket.close((): void => {
+					if (e) throw e;
+					console.log('socket has been closed');
+				});
 			});
 			console.log(`${packetNumber}: receives ${message.length} bytes`);
 		}
