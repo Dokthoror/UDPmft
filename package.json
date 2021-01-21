@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "npx tsc ./client/client.ts ./server/server.ts --outDir ./build/",
+		"build": "npx tsc ./client/client.ts ./server/server.ts --outDir ./build/ --resolveJsonModule --esModuleInterop -t es5",
 		"start-client": "node ./build/client/client.js",
 		"start-server": "node ./build/server/server.js",
 		"client-dev": "npx ts-node ./client/client.ts",
