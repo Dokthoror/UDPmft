@@ -45,8 +45,8 @@ export const sendFile = (pathToFile: string): void => {
 	rStream.on('close', (): void => {
 		socket.send(`${bitStop} undefined`, config.PORT, config.MULTICAST_ADDR, (e: Error | null): void => {
 			if (e) throw e;
+			socket.close();
 		});
 		console.log(`${packetNumber++}: sends STOP + md5`);
-		socket.close();
 	});
 };
