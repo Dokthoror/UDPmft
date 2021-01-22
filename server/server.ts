@@ -4,7 +4,7 @@ import { eventsHandler } from './src/events/eventsHandler';
 import Event from './src/modules/Event';
 import config from './config.json';
 import { NetworkInterfaceInfo, networkInterfaces} from 'os';
-import { access } from 'fs';
+import { access, Stats, statSync } from 'fs';
 import { F_OK } from 'constants';
 
 
@@ -14,10 +14,15 @@ if (!netInterface) throw new Error(`The network interface ${config.INTERFACE} wa
 export const netAddr = netInterface.find((i: NetworkInterfaceInfo): boolean => i.family == 'IPv4')?.address;
 
 
-const pathToFile: string = process.argv[2];
-access(pathToFile, F_OK, (e: NodeJS.ErrnoException | null): void => {
+// Gets path to the file to send
+export const pathToFile: string = process.argv[2];
+access(pathToFile, F_OK, async (e: NodeJS.ErrnoException | null): Promise<void> => {
 	if (e) throw e;
 });
+
+// Verifies if the file is not a directory or anything else
+const fileStats: Stats = statSync(pathToFile);
+if (!fileStats.isFile()) throw new Error('The specified file is not a file.');
 
 
 export const socket: Socket = createSocket({
