@@ -1,5 +1,5 @@
 {
-	"INTERFACE": "eth0",
+	"INTERFACE": "lo",
 	"PORT": 20000,
 	"MULTICAST_ADDR": "233.255.255.255"
 }
