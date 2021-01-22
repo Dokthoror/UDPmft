@@ -1,6 +1,6 @@
 // Import dependancies
 import { AddressInfo } from 'net';
-import { socket, netAddr } from '../../../server';
+import { socket, netAddr, pathToFile } from '../../../server';
 import Event from '../../modules/Event';
 import config from '../../../config.json';
 import { sendFile } from './sendFile';
@@ -13,7 +13,7 @@ const run: () => void = () => {
 	console.log(
 		`UDP socket listening on ${address.address}:${address.port} pid: ${process.pid}`
 	);
-	sendFile(process.argv[2]);	// Sends the file
+	sendFile(pathToFile);	// Sends the file
 };
 
 
