@@ -1,7 +1,8 @@
 // Import dependancies
-import { ReadStream, createReadStream } from 'fs';
+import { ReadStream, createReadStream, Stats } from 'fs';
 import config from '../../../config.json';
 import { socket } from '../../../server';
+import { statSync } from 'fs';
 
 
 // Function which sends the file passes as an argument in the multicast group
@@ -12,12 +13,20 @@ export const sendFile = (pathToFile: string): void => {
 	const bitStop = 'STOP';
 	const fileName: string = pathToFile.split('/').splice(-1, 1)[0];	// Gets the file name
 
+	const fileStats: Stats = statSync(pathToFile);
+	const fileSize: number = fileStats.size;
+	console.log(`total size to send : ${fileSize}B`);
+
+	const numberOfPacketsToSend: number = Math.ceil(fileSize / (32 * 1024));
+
+
 	// Sends the starting packets
 	// "START file_name"
 	socket.send(`${bitStart} ${fileName}`, config.PORT, config.MULTICAST_ADDR, (e: Error | null): void => {
 		if (e) throw e;
 	});
-	console.log(`${packetNumber++}: sends START + filename`);
+	console.log('sends START + filename');
+
 
 	// Starts reading the file passed as an argument, in 32kB increments
 	const rStream: ReadStream = createReadStream(pathToFile, {
@@ -32,24 +41,26 @@ export const sendFile = (pathToFile: string): void => {
 			config.MULTICAST_ADDR,
 			(e: Error | null): void => {
 				if (e) throw e;
-				rStream.pause();
+				rStream.pause();	// Pauses the stream
 			}
 		);
-		console.log(`${packetNumber++}: sends ${chunk.length} bytes`);
+		// console.log(`${packetNumber++}: sends ${chunk.length} bytes`);
+		console.log(`ETA: ${Math.round((packetNumber++ / numberOfPacketsToSend) * 100)}%`);
 		setTimeout((): void => {
-			rStream.resume();
+			rStream.resume();	// Waits DELAY ms and resumes the stream
 		}, config.DELAY);
 	});
 
-	// When the reading of the file is finished, sends the packet that indicates the end of the transfer, with the md5 hash of the original file for comparison
+
+	// When the reading of the file is finished, sends the packet that indicates the end of the transfer
 	rStream.on('close', (): void => {
-		socket.send(`${bitStop} undefined`, config.PORT, config.MULTICAST_ADDR, (e: Error | null): void => {
+		socket.send(`${bitStop}`, config.PORT, config.MULTICAST_ADDR, (e: Error | null): void => {
 			if (e) throw e;
 			socket.close((): void => {
 				if (e) throw e;
 				console.log('socket has been closed');
 			});
 		});
-		console.log(`${packetNumber++}: sends STOP + md5`);
+		console.log('sends STOP + md5');
 	});
 };
