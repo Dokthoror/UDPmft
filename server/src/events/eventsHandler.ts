@@ -4,5 +4,4 @@ import listeningEvent from './listening';
 
 
 // Creates and exports the events handler
-const eventsHandler: Event[] = [listeningEvent];
-export default eventsHandler;
+export const eventsHandler: Event[] = [listeningEvent];
