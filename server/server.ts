@@ -1,6 +1,6 @@
 // Imports dependancies
 import { Socket, createSocket } from 'dgram';
-import eventsHandler from './src/events/eventsHandler';
+import { eventsHandler } from './src/events/eventsHandler';
 import Event from './src/modules/Event';
 import config from './config.json';
 import { NetworkInterfaceInfo, networkInterfaces} from 'os';

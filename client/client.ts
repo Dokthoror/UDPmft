@@ -2,7 +2,7 @@
 import * as dgram from 'dgram';
 import { NetworkInterfaceInfo, networkInterfaces } from 'os';
 import config from './config.json';
-import eventsHandler from './src/events/eventsHandler';
+import { eventsHandler } from './src/events/eventsHandler';
 import Event from './src/modules/Event';
 
 
