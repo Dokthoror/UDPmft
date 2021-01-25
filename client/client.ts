@@ -9,16 +9,17 @@ import Event from './src/modules/Event';
 
 
 // Searches for the IPv4 addres of the specified interface in ./config.json
-const netInterface: NetworkInterfaceInfo[] | undefined = networkInterfaces()[config.INTERFACE];
-if (!netInterface) throw new Error(`The network interface ${config.INTERFACE} was not found.`);
-export const netAddr = netInterface.find((i: NetworkInterfaceInfo): boolean => i.family == 'IPv4')?.address;
+export let netAddr: string | undefined;
+try {
+	const netInterface: NetworkInterfaceInfo[] | undefined = networkInterfaces()[config.INTERFACE];
+	netAddr = netInterface!.find((i: NetworkInterfaceInfo): boolean => i.family == 'IPv4')?.address;
+} catch (e) {
+	throw new Error(`The network interface ${config.INTERFACE} was not found.`);
+}
 
 
 // Gets the target directory where the file is uploaded
 export let pathToDir: string = process.argv[2];
-access(pathToDir, F_OK, async (e: NodeJS.ErrnoException | null): Promise<void> => {
-	if (e) throw e;
-});
 
 // Verifies if the file is a directory
 const fileStats: Stats = statSync(pathToDir);
