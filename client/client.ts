@@ -1,5 +1,4 @@
 // Imports dependancies
-import { F_OK } from 'constants';
 import * as dgram from 'dgram';
 import { access, Stats, statSync } from 'fs';
 import { NetworkInterfaceInfo, networkInterfaces } from 'os';
