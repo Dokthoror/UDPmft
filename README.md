@@ -113,7 +113,7 @@ or
 node build/client/client.js
 ```
 
-Then, the second script to run is the server one, with the path to the file you want to transfer in argument.
+Then, the second script to run is the server one, with the path to the file you want to transfer and the number of machine which are supposed to receive this file in argument. By default, the second argument is one.
 
 ```bash
 npm run start-server /path/to/file

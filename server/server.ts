@@ -7,6 +7,7 @@ import { NetworkInterfaceInfo, networkInterfaces} from 'os';
 import { Stats, statSync } from 'fs';
 import { hash } from './src/events/listening/sendFile';
 
+
 // Searches for the IPv4 addres of the specified interface in ./config.json
 export let netAddr: string | undefined;
 try {
@@ -23,6 +24,11 @@ export const pathToFile: string = process.argv[2];
 // Verifies if the file is not a directory or anything else
 const fileStats: Stats = statSync(pathToFile);
 if (!fileStats.isFile()) throw new Error('The specified file cannot be sent.');
+
+
+// Gets the number of hash to verify
+const quantityToVerify: number = Number(process.argv[3]) | 1;
+let verifiedQuantity = 0;
 
 
 export const socket: Socket = createSocket({
@@ -50,6 +56,8 @@ socket.on('message', (message: Buffer, remote: RemoteInfo) => {
 		} else {
 			console.log('FILE CORRUPTED');
 		}
+		verifiedQuantity++;
+		if (verifiedQuantity == quantityToVerify) socket.close();
 		break;
 	
 	default:
