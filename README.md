@@ -35,7 +35,7 @@ UDPmft stands for UDP Multicast File Transfer. It provides a server and a client
 }
 ```
 
-- Choose a delay depending on your network speed. Don't forget that the server send data by 32kB segment via UDP so your network have to be able to support the given delay. For example, a delay of 10ms need a network speed a little bit more than **$\frac{32 kB}{10 ms}$ = 3,2 Mo/s**.
+- Choose a delay depending on your network speed. Don't forget that the server send data by 32kB segment via UDP so your network have to be able to support the given delay. For example, a delay of 10ms need a network speed a little bit more than **32 kB / 10 ms = 3,2 Mo/s**.
 
 ```JSON
 {
