@@ -113,16 +113,16 @@ or
 node build/client/client.js
 ```
 
-Then, the second script to run is the server one, with the path to the file you want to transfer and the number of machine which are supposed to receive this file in argument. By default, the second argument is one.
+Then, the second script to run is the server one, with the path to the file you want to transfer and the number of machine which are supposed to receive this file in argument. By default, the second argument is "1".
 
 ```bash
-npm run start-server /path/to/file
+npm run start-server /path/to/file 2
 ```
 
 or
 
 ```bash
-node build/server/server.js /path/to/file
+node build/server/server.js /path/to/file 2
 ```
 
 For the moment, files with space in their name are not correctly sent. For example, the file "/home/source/test and test.txt" is would be transfered in another directory like /home/destination/test. Just the first word is kept.
