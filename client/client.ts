@@ -1,10 +1,11 @@
 // Imports dependancies
-import * as dgram from 'dgram';
+import { createSocket, RemoteInfo } from 'dgram';
 import { access, Stats, statSync } from 'fs';
 import { NetworkInterfaceInfo, networkInterfaces } from 'os';
 import config from './config.json';
 import { eventsHandler } from './src/events/eventsHandler';
 import Event from './src/modules/Event';
+import { shasum } from './src/events/message';
 
 
 // Searches for the IPv4 addres of the specified interface in ./config.json
@@ -28,7 +29,7 @@ if (!fileStats.isDirectory()) throw new Error('The specified file is not a direc
 if (pathToDir.slice(-1) == '/') pathToDir = pathToDir.substring(0, pathToDir.length - 1);
 
 
-export const socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+export const socket = createSocket({ type: 'udp4', reuseAddr: true });
 socket.bind(config.PORT);
 
 
@@ -38,6 +39,6 @@ socket.on('listening', (): void => {
 });
 
 
-socket.on('message', (message: Buffer, remote: dgram.RemoteInfo): void => {
+socket.on('message', (message: Buffer, remote: RemoteInfo): void => {
 	eventsHandler.find((e: Event) => e.name == 'message')?.run(message, remote);
 });
