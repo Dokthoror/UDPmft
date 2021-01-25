@@ -5,8 +5,7 @@ import Event from './src/modules/Event';
 import config from './config.json';
 import { NetworkInterfaceInfo, networkInterfaces} from 'os';
 import { Stats, statSync } from 'fs';
-import { F_OK } from 'constants';
-
+import { shasum } from './src/events/listening/sendFile';
 
 // Searches for the IPv4 addres of the specified interface in ./config.json
 export let netAddr: string | undefined;
@@ -36,4 +35,10 @@ socket.bind(config.PORT, netAddr);
 // When the socket is ready to listen
 socket.on('listening', (): void => {
 	eventsHandler.find((e: Event) => e.name == 'listening')?.run();
+});
+
+
+socket.on('close', (): void => {
+	const hash: string = shasum.digest('hex');
+	console.log(`The hash of the file ${pathToFile} is: ${hash}`);
 });

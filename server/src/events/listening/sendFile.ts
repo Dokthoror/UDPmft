@@ -3,21 +3,27 @@ import { ReadStream, createReadStream, Stats } from 'fs';
 import config from '../../../config.json';
 import { socket } from '../../../server';
 import { statSync } from 'fs';
+import { createHash, Hash } from 'crypto';
 
+
+export let shasum: Hash;
 
 // Function which sends the file passes as an argument in the multicast group
 export const sendFile = (pathToFile: string): void => {
-	let packetNumber = 0;
+	shasum = createHash('sha1');
+
+	let packetNumber = 1;
 
 	const bitStart = 'START';
 	const bitStop = 'STOP';
 	const fileName: string = pathToFile.split('/').splice(-1, 1)[0];	// Gets the file name
 
+	
 	const fileStats: Stats = statSync(pathToFile);
 	const fileSize: number = fileStats.size;
-	console.log(`total size to send : ${fileSize}B`);
-
 	const numberOfPacketsToSend: number = Math.ceil(fileSize / (32 * 1024));
+
+	console.log(`Number of packets to send: ${numberOfPacketsToSend}`);
 
 
 	// Sends the starting packets
@@ -44,6 +50,9 @@ export const sendFile = (pathToFile: string): void => {
 				rStream.pause();	// Pauses the stream
 			}
 		);
+
+		shasum.update(chunk);
+
 		// console.log(`${packetNumber++}: sends ${chunk.length} bytes`);
 		console.log(`ETA: ${Math.round((packetNumber++ / numberOfPacketsToSend) * 100)}%`);
 		setTimeout((): void => {
@@ -56,11 +65,10 @@ export const sendFile = (pathToFile: string): void => {
 	rStream.on('close', (): void => {
 		socket.send(`${bitStop}`, config.PORT, config.MULTICAST_ADDR, (e: Error | null): void => {
 			if (e) throw e;
-			socket.close((): void => {
-				if (e) throw e;
-				console.log('socket has been closed');
-			});
+
+			console.log('sends STOP');
+
+			socket.close();
 		});
-		console.log('sends STOP + md5');
 	});
 };
