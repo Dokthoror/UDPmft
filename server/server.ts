@@ -23,7 +23,7 @@ export const pathToFile: string = process.argv[2];
 
 // Verifies if the file is not a directory or anything else
 const fileStats: Stats = statSync(pathToFile);
-if (!fileStats.isFile()) throw new Error('The specified file is not a file.');
+if (!fileStats.isFile()) throw new Error('The specified file cannot be sent.');
 
 
 export const socket: Socket = createSocket({
