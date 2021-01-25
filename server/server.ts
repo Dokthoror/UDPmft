@@ -1,11 +1,11 @@
 // Imports dependancies
-import { Socket, createSocket } from 'dgram';
+import { Socket, createSocket, RemoteInfo } from 'dgram';
 import { eventsHandler } from './src/events/eventsHandler';
 import Event from './src/modules/Event';
 import config from './config.json';
 import { NetworkInterfaceInfo, networkInterfaces} from 'os';
 import { Stats, statSync } from 'fs';
-import { shasum } from './src/events/listening/sendFile';
+import { hash } from './src/events/listening/sendFile';
 
 // Searches for the IPv4 addres of the specified interface in ./config.json
 export let netAddr: string | undefined;
@@ -38,7 +38,21 @@ socket.on('listening', (): void => {
 });
 
 
-socket.on('close', (): void => {
-	const hash: string = shasum.digest('hex');
-	console.log(`The hash of the file ${pathToFile} is: ${hash}`);
+socket.on('message', (message: Buffer, remote: RemoteInfo) => {
+	const data: string = message.toString().split(' ')[0];
+	const value: string[] = message.toString().split(' ').slice(1);
+
+	switch (data) {
+	case 'SHA1':
+		console.log(`Received SHA1 from ${value[0]}: ${value[1]}`);
+		if (hash == value[1]) {
+			console.log('FILE OK');
+		} else {
+			console.log('FILE CORRUPTED');
+		}
+		break;
+	
+	default:
+		break;
+	}
 });

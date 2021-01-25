@@ -6,11 +6,12 @@ import { statSync } from 'fs';
 import { createHash, Hash } from 'crypto';
 
 
-export let shasum: Hash;
+export let hash: string;
 
 // Function which sends the file passes as an argument in the multicast group
 export const sendFile = (pathToFile: string): void => {
-	shasum = createHash('sha1');
+	// Creates the hash
+	const shasum = createHash('sha1');
 
 	let packetNumber = 1;
 
@@ -51,6 +52,7 @@ export const sendFile = (pathToFile: string): void => {
 			}
 		);
 
+		// Updates the hash with the sent data
 		shasum.update(chunk);
 
 		// console.log(`${packetNumber++}: sends ${chunk.length} bytes`);
@@ -68,7 +70,7 @@ export const sendFile = (pathToFile: string): void => {
 
 			console.log('sends STOP');
 
-			socket.close();
+			hash = shasum.digest('hex');
 		});
 	});
 };

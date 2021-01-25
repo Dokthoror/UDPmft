@@ -2,7 +2,8 @@
 import Event from '../../modules/Event';
 import { RemoteInfo } from 'dgram';
 import { WriteStream, createWriteStream } from 'fs';
-import { pathToDir, socket } from '../../../client';
+import { netAddr, pathToDir, socket } from '../../../client';
+import { createHash, Hash } from 'crypto';
 
 
 // Tells if the packets the socket receives should be written in the target file
@@ -10,6 +11,9 @@ let writeToFile = false;
 let wStream: WriteStream;
 
 let packetNumber = 0;
+
+// Creates the hash
+export const shasum: Hash = createHash('sha1');
 
 
 // Function to run when the event is triggered
@@ -37,8 +41,10 @@ const run: (message: Buffer, remote: RemoteInfo) => void = (message: Buffer, rem
 		writeToFile = false;
 		wStream.close();	// Closes the WriteStream and write the data in the target file
 		console.log(`${packetNumber}: STOP received`);
-		socket.close((): void => {
-			console.log('socket has been closed');
+		// Sends the hash to the server for comparison
+		socket.send(`SHA1 ${netAddr} ${shasum.digest('hex')}`, remote.port, remote.address, (e: Error | null) => {
+			if (e) throw e;
+			socket.close();
 		});
 		break;
 
@@ -48,6 +54,8 @@ const run: (message: Buffer, remote: RemoteInfo) => void = (message: Buffer, rem
 			wStream.write(message, (e: Error | null | undefined): void => {
 				if (e) throw e;
 			});
+			// Updates the hash with the received data
+			shasum.update(message);
 			console.log(`${packetNumber}: receives ${message.length} bytes`);
 		}
 		break;
