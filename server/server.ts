@@ -27,8 +27,7 @@ if (!fileStats.isFile()) throw new Error('The specified file cannot be sent.');
 
 
 // Gets the number of hash to verify
-const quantityToVerify: number = Number(process.argv[3]) | 1;
-let verifiedQuantity = 0;
+export const quantityToVerify: number = Number(process.argv[3]) | 1;
 
 
 export const socket: Socket = createSocket({
@@ -45,22 +44,5 @@ socket.on('listening', (): void => {
 
 
 socket.on('message', (message: Buffer, remote: RemoteInfo) => {
-	const data: string = message.toString().split(' ')[0];
-	const value: string[] = message.toString().split(' ').slice(1);
-
-	switch (data) {
-	case 'SHA1':
-		console.log(`Received SHA1 from ${value[0]}: ${value[1]}`);
-		if (hash == value[1]) {
-			console.log('FILE OK');
-		} else {
-			console.log('FILE CORRUPTED');
-		}
-		verifiedQuantity++;
-		if (verifiedQuantity == quantityToVerify) socket.close();
-		break;
-	
-	default:
-		break;
-	}
+	eventsHandler.find((e: Event) => e.name == 'message')?.run(message, remote);
 });

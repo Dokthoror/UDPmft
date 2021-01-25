@@ -4,7 +4,7 @@
 export default class Event {
     private _name: string;
 
-    public run: () => void
+    public run: (arg0?: any, arg1?: any) => void
 
     /**
 	 * Event's contructor
@@ -13,7 +13,7 @@ export default class Event {
 	 */
     public constructor(
     	name: string,
-    	run: () => void
+    	run: (arg0?: any, arg1?: any) => void
     ) {
     	this._name = name;
     	this.run = run;
