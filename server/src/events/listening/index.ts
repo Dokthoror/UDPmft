@@ -13,7 +13,7 @@ const run: () => void = () => {
 	console.log(
 		`UDP socket listening on ${address.address}:${address.port} pid: ${process.pid}`
 	);
-	sendFile(pathToFile);	// Sends the file
+	sendFile(pathToFile!);	// Sends the file
 };
 
 
