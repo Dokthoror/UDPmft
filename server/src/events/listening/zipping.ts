@@ -17,8 +17,8 @@ export const zipping = async (
 	tmpFilePath: string
 ): Promise<void> => {
 	const gzip = createGzip();
-	const zipSource: ReadStream = createReadStream(pathToFile);
+	const fileSource: ReadStream = createReadStream(pathToFile);
 	const zipDest: WriteStream = createWriteStream(tmpFilePath);
-	await pipe(zipSource, gzip, zipDest);
+	await pipe(fileSource, gzip, zipDest);
 	zipDest.close();
 };
